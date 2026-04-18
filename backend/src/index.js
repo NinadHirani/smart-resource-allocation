@@ -12,10 +12,11 @@ const analyticsRoutes = require('./routes/analytics');
 
 const app = express();
 const port = process.env.PORT || 8080;
+const frontendOrigin = (process.env.FRONTEND_URL || 'http://localhost:5173').trim();
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: frontendOrigin,
   })
 );
 app.use(express.json({ limit: '2mb' }));
