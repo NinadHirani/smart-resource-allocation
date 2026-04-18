@@ -6,6 +6,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import Analytics from './pages/Analytics';
 import Login from './pages/Login';
 import NeedReports from './pages/NeedReports';
+import NewTask from './pages/NewTask';
 import PublicReportForm from './pages/PublicReportForm';
 import Register from './pages/Register';
 import ReportDetail from './pages/ReportDetail';
@@ -154,6 +155,16 @@ export default function App() {
           <ProtectedRoute roles={['admin']}>
             <AppLayout>
               <Tasks />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/tasks/new"
+        element={
+          <ProtectedRoute roles={['admin']}>
+            <AppLayout>
+              <NewTask />
             </AppLayout>
           </ProtectedRoute>
         }

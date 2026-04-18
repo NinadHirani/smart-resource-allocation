@@ -8,6 +8,7 @@ export default function Login() {
   const { isAuthenticated, login, user } = useAuth();
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -50,12 +51,17 @@ export default function Login() {
         </label>
         <label className="field-full">
           <span>Password</span>
-          <input
-            required
-            type="password"
-            value={form.password}
-            onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
-          />
+          <div className="password-row">
+            <input
+              required
+              type={showPassword ? 'text' : 'password'}
+              value={form.password}
+              onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
+            />
+            <button className="ghost-button password-toggle" onClick={() => setShowPassword((current) => !current)} type="button">
+              {showPassword ? 'Hide' : 'Show'}
+            </button>
+          </div>
         </label>
         <button className="primary-button" disabled={submitting} type="submit">
           {submitting ? 'Signing In...' : 'Sign In'}

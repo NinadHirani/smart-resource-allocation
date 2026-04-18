@@ -34,9 +34,14 @@ export default function Tasks() {
 
   return (
     <section className="page-grid">
-      <div>
-        <p className="eyebrow">Tasks</p>
-        <h1 className="page-title">Track operational work from open to completed</h1>
+      <div className="between">
+        <div>
+          <p className="eyebrow">Tasks</p>
+          <h1 className="page-title">Track operational work from open to completed</h1>
+        </div>
+        <Link className="primary-button" to="/admin/tasks/new">
+          + New Task
+        </Link>
       </div>
       {error ? <div className="alert error">{error}</div> : null}
       <section className="panel">

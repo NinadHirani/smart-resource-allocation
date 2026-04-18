@@ -147,7 +147,20 @@ router.post('/login', async (req, res) => {
 
 router.get('/me', auth, async (req, res) => {
   try {
-    const result = await pool.query('SELECT id, email, role, org_id, created_at FROM users WHERE id = $1', [req.user.id]);
+    const result = await pool.query(
+      `SELECT
+         u.id,
+         u.email,
+         u.role,
+         u.org_id,
+         u.created_at,
+         o.name AS org_name,
+         o.org_code
+       FROM users u
+       LEFT JOIN organizations o ON o.id = u.org_id
+       WHERE u.id = $1`,
+      [req.user.id]
+    );
     if (result.rowCount === 0) {
       return res.status(404).json({ error: 'User not found' });
     }

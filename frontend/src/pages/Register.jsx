@@ -14,6 +14,7 @@ export default function Register() {
   const [volunteerForm, setVolunteerForm] = useState(initialVolunteer);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -86,13 +87,18 @@ export default function Register() {
             </label>
             <label className="field-full">
               <span>Password</span>
-              <input
-                required
-                minLength={6}
-                type="password"
-                value={adminForm.password}
-                onChange={(event) => setAdminForm((current) => ({ ...current, password: event.target.value }))}
-              />
+              <div className="password-row">
+                <input
+                  required
+                  minLength={6}
+                  type={showPassword ? 'text' : 'password'}
+                  value={adminForm.password}
+                  onChange={(event) => setAdminForm((current) => ({ ...current, password: event.target.value }))}
+                />
+                <button className="ghost-button password-toggle" onClick={() => setShowPassword((current) => !current)} type="button">
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
             </label>
           </>
         ) : (
@@ -123,13 +129,18 @@ export default function Register() {
             </label>
             <label className="field-full">
               <span>Password</span>
-              <input
-                required
-                minLength={6}
-                type="password"
-                value={volunteerForm.password}
-                onChange={(event) => setVolunteerForm((current) => ({ ...current, password: event.target.value }))}
-              />
+              <div className="password-row">
+                <input
+                  required
+                  minLength={6}
+                  type={showPassword ? 'text' : 'password'}
+                  value={volunteerForm.password}
+                  onChange={(event) => setVolunteerForm((current) => ({ ...current, password: event.target.value }))}
+                />
+                <button className="ghost-button password-toggle" onClick={() => setShowPassword((current) => !current)} type="button">
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
             </label>
           </>
         )}

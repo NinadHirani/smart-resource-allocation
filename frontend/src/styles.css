@@ -124,6 +124,20 @@ button {
   background: rgba(255, 255, 255, 0.4);
 }
 
+.sidebar-org {
+  display: grid;
+  gap: 0.2rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 1rem;
+  background: rgba(16, 42, 67, 0.9);
+  color: white;
+}
+
+.sidebar-org small {
+  color: rgba(255, 255, 255, 0.74);
+}
+
 .sidebar-link {
   display: block;
   padding: 0.95rem 1rem;
@@ -338,6 +352,18 @@ th {
   border: 1px solid rgba(16, 42, 67, 0.14);
   padding: 0.9rem 1rem;
   background: rgba(255, 255, 255, 0.8);
+}
+
+.password-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.password-toggle {
+  padding-inline: 0.9rem;
+  white-space: nowrap;
 }
 
 .fieldset,

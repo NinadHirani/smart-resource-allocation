@@ -24,6 +24,12 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
+      {user?.role === 'admin' && (user.org_name || user.org_code) ? (
+        <div className="sidebar-org">
+          <strong>{user.org_name || 'Organization'}</strong>
+          <small>Org Code: {user.org_code || 'Pending'}</small>
+        </div>
+      ) : null}
       {links.map((link) => (
         <NavLink
           key={link.to}
