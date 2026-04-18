@@ -13,8 +13,8 @@ function adminLinks() {
 
 function volunteerLinks() {
   return [
-    { to: '/volunteer/dashboard', label: 'My Dashboard' },
-    { to: '/volunteer/profile', label: 'Profile' },
+    { to: '/volunteer/dashboard', label: 'Assignments' },
+    { to: '/volunteer/profile', label: 'Edit Profile' },
   ];
 }
 

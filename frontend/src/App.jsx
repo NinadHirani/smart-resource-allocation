@@ -11,6 +11,7 @@ import Register from './pages/Register';
 import ReportDetail from './pages/ReportDetail';
 import TaskDetail from './pages/TaskDetail';
 import Tasks from './pages/Tasks';
+import VolunteerDashboard from './pages/VolunteerDashboard';
 import VolunteerProfile from './pages/VolunteerProfile';
 import Volunteers from './pages/Volunteers';
 
@@ -24,13 +25,29 @@ function Landing() {
           Smart Resource Allocation helps NGOs collect field reports, prioritize urgency with Gemini, and match the right volunteers to the right tasks.
         </p>
         <div className="hero-actions">
-          <a className="primary-button" href="/register">
-            Create Admin Account
-          </a>
-          <a className="ghost-button" href="/login">
-            Volunteer Login
-          </a>
+          <a className="primary-button" href="/register">Create Admin Account</a>
+          <a className="ghost-button" href="/login">Login</a>
         </div>
+      </section>
+      <section className="cards-grid">
+        <article className="panel">
+          <p className="eyebrow">For Admins</p>
+          <h2>Review needs, create tasks, and coordinate the response.</h2>
+          <p className="page-copy">Admins create the organization, get an `org_code`, review urgent reports, generate tasks, and assign volunteers with Gemini help.</p>
+          <a className="primary-button" href="/register">Start as Admin</a>
+        </article>
+        <article className="panel">
+          <p className="eyebrow">For Volunteers</p>
+          <h2>Create your profile, track assignments, and mark work complete.</h2>
+          <p className="page-copy">Volunteers register once, fill in their availability and skills, then use a dedicated dashboard to manage assigned tasks.</p>
+          <a className="ghost-button" href="/register">Join as Volunteer</a>
+        </article>
+        <article className="panel">
+          <p className="eyebrow">For Field Agents</p>
+          <h2>Submit a report quickly from any phone using the organization code.</h2>
+          <p className="page-copy">Open `/report/:orgCode` to submit urgent community needs without logging in.</p>
+          <a className="ghost-button" href="/login">Need an org code?</a>
+        </article>
       </section>
     </main>
   );
@@ -176,7 +193,7 @@ export default function App() {
         element={
           <ProtectedRoute roles={['volunteer']}>
             <AppLayout>
-              <VolunteerProfile dashboardMode />
+              <VolunteerDashboard />
             </AppLayout>
           </ProtectedRoute>
         }

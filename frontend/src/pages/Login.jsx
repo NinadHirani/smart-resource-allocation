@@ -1,14 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { isAuthenticated, login, user } = useAuth();
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(user?.role === 'admin' ? '/admin' : '/volunteer/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate, user]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -57,6 +63,9 @@ export default function Login() {
       </form>
       <p className="page-copy">
         Need an account? <Link to="/register">Register here</Link>
+      </p>
+      <p className="page-copy">
+        Field agent? Use the public report URL provided by your admin: <code>/report/:orgCode</code>
       </p>
     </section>
   );

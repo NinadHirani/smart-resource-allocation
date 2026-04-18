@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
@@ -8,13 +8,19 @@ const initialVolunteer = { name: '', email: '', password: '', phone: '' };
 
 export default function Register() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { isAuthenticated, login, user } = useAuth();
   const [role, setRole] = useState('admin');
   const [adminForm, setAdminForm] = useState(initialAdmin);
   const [volunteerForm, setVolunteerForm] = useState(initialVolunteer);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(user?.role === 'admin' ? '/admin' : '/volunteer/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate, user]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -31,7 +37,7 @@ export default function Register() {
       } else {
         const response = await api.post('/auth/register/volunteer', volunteerForm);
         login(response);
-        navigate('/volunteer/profile');
+        navigate('/volunteer/dashboard');
       }
     } catch (submitError) {
       setError(submitError.message);
@@ -131,6 +137,7 @@ export default function Register() {
           {submitting ? 'Creating...' : role === 'admin' ? 'Create Admin Account' : 'Join as Volunteer'}
         </button>
       </form>
+      <p className="page-copy">Admins manage organizations and tasks. Volunteers get a separate dashboard after signup.</p>
     </section>
   );
 }
