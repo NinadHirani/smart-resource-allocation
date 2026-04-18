@@ -76,9 +76,9 @@ function AppLayout({ children, sidebar = true }) {
   return (
     <>
       <Navbar />
-      <div className="app-shell">
+      <div className={`app-shell${sidebar ? '' : ' no-sidebar'}`}>
         {sidebar ? <Sidebar /> : null}
-        <div className="page-shell">{children}</div>
+        <div className={`page-shell${sidebar ? '' : ' auth-shell'}`}>{children}</div>
       </div>
     </>
   );
