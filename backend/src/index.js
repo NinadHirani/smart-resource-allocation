@@ -33,9 +33,16 @@ app.use('/api/analytics', analyticsRoutes);
 
 app.use((err, _req, res, _next) => {
   console.error(err);
+  if (err.code === 'DATABASE_URL_MISSING') {
+    return res.status(500).json({ error: 'Backend is missing DATABASE_URL configuration' });
+  }
   res.status(500).json({ error: 'Internal server error' });
 });
 
-app.listen(port, () => {
-  console.log(`Backend running on port ${port}`);
-});
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`Backend running on port ${port}`);
+  });
+}
+
+module.exports = app;
