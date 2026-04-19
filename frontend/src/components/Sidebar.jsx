@@ -30,6 +30,12 @@ export default function Sidebar() {
           <small>Org Code: {user.org_code || 'Pending'}</small>
         </div>
       ) : null}
+      {user?.role === 'volunteer' ? (
+        <div className="sidebar-org volunteer">
+          <strong>{user.display_name || 'Volunteer'}</strong>
+          <small>{user.email}</small>
+        </div>
+      ) : null}
       {links.map((link) => (
         <NavLink
           key={link.to}

@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { api } from '../api/client';
 import TaskCard from '../components/TaskCard';
 import UrgencyBadge from '../components/UrgencyBadge';
+import { useAuth } from '../context/AuthContext';
 
 export default function AdminDashboard() {
+  const { user } = useAuth();
   const [summary, setSummary] = useState(null);
   const [reports, setReports] = useState([]);
   const [tasks, setTasks] = useState([]);
@@ -19,8 +21,8 @@ export default function AdminDashboard() {
           api.get('/tasks?limit=3'),
         ]);
         setSummary(summaryResponse);
-        setReports(reportsResponse.data);
-        setTasks(tasksResponse.data);
+        setReports(reportsResponse?.data ?? []);
+        setTasks(tasksResponse?.data ?? []);
       } catch (loadError) {
         setError(loadError.message);
       }
@@ -36,6 +38,11 @@ export default function AdminDashboard() {
         <h1 className="page-title">See urgent needs and move the right people faster</h1>
         <p className="page-copy">A quick snapshot of new reports, open tasks, volunteer capacity, and what got completed this month.</p>
       </div>
+      {user?.org_code ? (
+        <div className="alert success">
+          Your field agent form link: <strong>{window.location.origin}/report/{user.org_code}</strong> — share this with your field workers.
+        </div>
+      ) : null}
       {error ? <div className="alert error">{error}</div> : null}
       {summary ? (
         <div className="stats-grid">

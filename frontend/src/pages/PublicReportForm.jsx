@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { api } from '../api/client';
+import { API_BASE_URL } from '../api/client';
 import { NEED_CATEGORIES } from '../lib/constants';
 
 const initialForm = {
@@ -25,8 +25,10 @@ export default function PublicReportForm() {
   useEffect(() => {
     async function loadOrg() {
       try {
-        const response = await api.get(`/reports/public-org/${orgCode}`);
-        setOrg(response.org);
+        const response = await fetch(`${API_BASE_URL}/reports/public-org/${orgCode}`);
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.error || 'Unable to load organization');
+        setOrg(payload.org);
       } catch (loadError) {
         setError(loadError.message);
       } finally {
@@ -44,11 +46,17 @@ export default function PublicReportForm() {
     setSubmitting(true);
 
     try {
-      const response = await api.post(`/reports/public/${orgCode}`, {
-        ...form,
-        affected_count: form.affected_count ? Number(form.affected_count) : null,
+      const response = await fetch(`${API_BASE_URL}/reports/public/${orgCode}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...form,
+          affected_count: form.affected_count ? Number(form.affected_count) : null,
+        }),
       });
-      setSuccess(response.message);
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || 'Submission failed');
+      setSuccess(payload.message);
       setForm(initialForm);
     } catch (submitError) {
       setError(submitError.message);

@@ -1,7 +1,7 @@
-export default function MatchCard({ match, selected, onToggle }) {
+export default function MatchCard({ match, selected, disabled, onToggle }) {
   return (
     <label className={`match-card${selected ? ' selected' : ''}`}>
-      <input checked={selected} onChange={() => onToggle(match.volunteer.id)} type="checkbox" />
+      <input checked={selected} disabled={disabled} onChange={() => onToggle(match.volunteer.id)} type="checkbox" />
       <div>
         <div className="match-header">
           <strong>{match.volunteer.display_name}</strong>

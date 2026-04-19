@@ -64,47 +64,65 @@ export default function Analytics() {
       <div className="cards-grid">
         <section className="panel">
           <p className="eyebrow">By Category</p>
-          <BarChart
-            label="Reports"
-            labels={data.byCategory.map((item) => item.category)}
-            values={data.byCategory.map((item) => item.count)}
-          />
+          {data.byCategory.length === 0 ? (
+            <div className="empty-state">No data yet. Submit your first field report to see trends here.</div>
+          ) : (
+            <BarChart
+              label="Reports"
+              labels={data.byCategory.map((item) => item.category)}
+              values={data.byCategory.map((item) => item.count)}
+            />
+          )}
         </section>
         <section className="panel">
           <p className="eyebrow">Daily Trend</p>
-          <LineChart
-            label="Reports Per Day"
-            labels={data.perDay.map((item) => new Date(item.date).toLocaleDateString())}
-            values={data.perDay.map((item) => item.count)}
-          />
+          {data.perDay.length === 0 ? (
+            <div className="empty-state">No data yet. Submit your first field report to see trends here.</div>
+          ) : (
+            <LineChart
+              label="Reports Per Day"
+              labels={data.perDay.map((item) => new Date(item.date).toLocaleDateString())}
+              values={data.perDay.map((item) => item.count)}
+            />
+          )}
         </section>
         <section className="panel">
           <p className="eyebrow">Task Status</p>
-          <PieChart labels={data.taskStatus.map((item) => item.status)} values={data.taskStatus.map((item) => item.count)} />
+          {data.taskStatus.length === 0 ? (
+            <div className="empty-state">No data yet. Submit your first field report to see trends here.</div>
+          ) : (
+            <PieChart labels={data.taskStatus.map((item) => item.status)} values={data.taskStatus.map((item) => item.count)} />
+          )}
         </section>
       </div>
-      <section className="table-card">
-        <table>
-          <thead>
-            <tr>
-              <th>Location</th>
-              <th>Total Reports</th>
-              <th>Average Urgency</th>
-              <th>Top Category</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.heatmap.map((row) => (
-              <tr key={row.location}>
-                <td>{row.location}</td>
-                <td>{row.total_reports}</td>
-                <td>{row.avg_urgency}</td>
-                <td>{row.top_category || '-'}</td>
+      {data.heatmap.length === 0 ? (
+        <section className="panel">
+          <div className="empty-state">No data yet. Submit your first field report to see trends here.</div>
+        </section>
+      ) : (
+        <section className="table-card">
+          <table>
+            <thead>
+              <tr>
+                <th>Location</th>
+                <th>Total Reports</th>
+                <th>Average Urgency</th>
+                <th>Top Category</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+            </thead>
+            <tbody>
+              {data.heatmap.map((row) => (
+                <tr key={row.location}>
+                  <td>{row.location}</td>
+                  <td>{row.total_reports}</td>
+                  <td>{row.avg_urgency}</td>
+                  <td>{row.top_category || '-'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )}
     </section>
   );
 }

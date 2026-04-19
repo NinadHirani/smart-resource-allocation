@@ -150,15 +150,17 @@ router.get('/me', auth, async (req, res) => {
     const result = await pool.query(
       `SELECT
          u.id,
-         u.email,
-         u.role,
-         u.org_id,
-         u.created_at,
-         o.name AS org_name,
-         o.org_code
-       FROM users u
-       LEFT JOIN organizations o ON o.id = u.org_id
-       WHERE u.id = $1`,
+       u.email,
+       u.role,
+       u.org_id,
+       u.created_at,
+       vp.display_name,
+       o.name AS org_name,
+       o.org_code
+      FROM users u
+      LEFT JOIN volunteer_profiles vp ON vp.user_id = u.id
+      LEFT JOIN organizations o ON o.id = u.org_id
+      WHERE u.id = $1`,
       [req.user.id]
     );
     if (result.rowCount === 0) {

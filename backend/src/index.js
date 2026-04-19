@@ -37,6 +37,9 @@ app.use((err, _req, res, _next) => {
   if (err.code === 'DATABASE_URL_MISSING') {
     return res.status(500).json({ error: 'Backend is missing DATABASE_URL configuration' });
   }
+  if (err.code === '53300') {
+    return res.status(503).json({ error: 'Database connection limit reached. Try again shortly.' });
+  }
   res.status(500).json({ error: 'Internal server error' });
 });
 

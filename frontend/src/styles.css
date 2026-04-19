@@ -443,6 +443,17 @@ th {
   outline: 2px solid #0f766e;
 }
 
+.match-card input:disabled {
+  cursor: not-allowed;
+}
+
+.expanded-row {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.9rem 0.2rem;
+  color: #52667a;
+}
+
 .map-frame {
   width: 100%;
   min-height: 280px;

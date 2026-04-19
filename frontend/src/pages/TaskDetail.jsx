@@ -11,10 +11,14 @@ export default function TaskDetail() {
   const [matches, setMatches] = useState([]);
   const [selectedVolunteerIds, setSelectedVolunteerIds] = useState([]);
   const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   const [status, setStatus] = useState('open');
+  const [matching, setMatching] = useState(false);
+  const [assigning, setAssigning] = useState(false);
 
   async function loadTask() {
     try {
+      setError('');
       const response = await api.get(`/tasks/${id}`);
       setTask(response.task);
       setAssignments(response.assignments);
@@ -29,27 +33,42 @@ export default function TaskDetail() {
   }, [id]);
 
   function toggleVolunteer(volunteerId) {
+    const maxSelectable = Number(task?.volunteer_count_needed || 1);
     setSelectedVolunteerIds((current) =>
-      current.includes(volunteerId) ? current.filter((item) => item !== volunteerId) : [...current, volunteerId]
+      current.includes(volunteerId)
+        ? current.filter((item) => item !== volunteerId)
+        : current.length >= maxSelectable
+          ? current
+          : [...current, volunteerId]
     );
   }
 
   async function findMatches() {
+    setMatching(true);
+    setError('');
     try {
       const response = await api.post(`/matching/task/${id}/suggest`, {});
       setMatches(response.matches);
     } catch (matchError) {
       setError(matchError.message);
+    } finally {
+      setMatching(false);
     }
   }
 
   async function assignVolunteers() {
+    setAssigning(true);
+    setError('');
+    setSuccessMsg('');
     try {
       await api.post(`/matching/task/${id}/assign`, { volunteer_ids: selectedVolunteerIds });
       setSelectedVolunteerIds([]);
+      setSuccessMsg('Volunteer(s) assigned successfully. Email notification sent.');
       await loadTask();
     } catch (assignError) {
       setError(assignError.message);
+    } finally {
+      setAssigning(false);
     }
   }
 
@@ -62,11 +81,27 @@ export default function TaskDetail() {
     }
   }
 
-  if (!task) return <div className="page-message">Loading task details...</div>;
+  useEffect(() => {
+    if (!successMsg) return undefined;
+
+    const timeoutId = window.setTimeout(() => setSuccessMsg(''), 4000);
+    return () => window.clearTimeout(timeoutId);
+  }, [successMsg]);
+
+  if (!task && !error) return <div className="page-message">Loading task details...</div>;
+  if (error && !task)
+    return (
+      <section className="page-grid">
+        <div className="alert error">{error}</div>
+      </section>
+    );
+
+  const selectionLimit = Number(task?.volunteer_count_needed || 1);
 
   return (
     <section className="page-grid">
       {error ? <div className="alert error">{error}</div> : null}
+      {successMsg ? <div className="alert success">{successMsg}</div> : null}
       <article className="panel">
         <div className="between">
           <div>
@@ -95,8 +130,8 @@ export default function TaskDetail() {
           <button className="ghost-button" onClick={updateStatus} type="button">
             Update Task Status
           </button>
-          <button className="primary-button" onClick={findMatches} type="button">
-            Find Best Volunteers
+          <button className="primary-button" disabled={matching} onClick={findMatches} type="button">
+            {matching ? 'Gemini AI is finding matches...' : 'Find Best Volunteers'}
           </button>
         </div>
       </article>
@@ -107,15 +142,22 @@ export default function TaskDetail() {
               <p className="eyebrow">AI Suggestions</p>
               <h2>Top volunteer matches</h2>
             </div>
-            <button className="primary-button" disabled={selectedVolunteerIds.length === 0} onClick={assignVolunteers} type="button">
-              Assign Selected
+            <button
+              className="primary-button"
+              disabled={selectedVolunteerIds.length === 0 || assigning}
+              onClick={assignVolunteers}
+              type="button"
+            >
+              {assigning ? 'Assigning...' : 'Assign Selected'}
             </button>
           </div>
+          <p className="muted">Select up to {selectionLimit} volunteer(s).</p>
           <div className="page-grid">
             {matches.length === 0 ? <div className="empty-state">Run AI matching to see suggested volunteers.</div> : null}
             {matches.map((match) => (
               <MatchCard
                 key={match.volunteer.id}
+                disabled={!selectedVolunteerIds.includes(match.volunteer.id) && selectedVolunteerIds.length >= selectionLimit}
                 match={match}
                 onToggle={toggleVolunteer}
                 selected={selectedVolunteerIds.includes(match.volunteer.id)}

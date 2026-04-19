@@ -10,6 +10,7 @@ export default function ReportDetail() {
   const [report, setReport] = useState(null);
   const [error, setError] = useState('');
   const [status, setStatus] = useState('reviewed');
+  const [rescoring, setRescoring] = useState(false);
   const [taskForm, setTaskForm] = useState({
     title: '',
     description: '',
@@ -58,11 +59,15 @@ export default function ReportDetail() {
   }
 
   async function rescore() {
+    setRescoring(true);
+    setError('');
     try {
       const response = await api.post(`/reports/${id}/rescore`, {});
       setReport(response.report);
     } catch (updateError) {
       setError(updateError.message);
+    } finally {
+      setRescoring(false);
     }
   }
 
@@ -121,8 +126,8 @@ export default function ReportDetail() {
             <button className="ghost-button" onClick={updateStatus} type="button">
               Update Status
             </button>
-            <button className="ghost-button" onClick={rescore} type="button">
-              Re-run Urgency Scoring
+            <button className="ghost-button" disabled={rescoring} onClick={rescore} type="button">
+              {rescoring ? 'Rescoring...' : 'Re-run Urgency Scoring'}
             </button>
           </div>
         </article>

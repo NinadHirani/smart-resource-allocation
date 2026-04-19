@@ -304,14 +304,9 @@ router.post('/import/csv', auth, requireRole('admin'), upload.single('file'), as
     }
   }
 
-  for (let i = 0; i < insertedIds.length; i += 1) {
-    await applyUrgencyScoring(insertedIds[i]);
-    if ((i + 1) % 10 === 0) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-  }
+  Promise.allSettled(insertedIds.map((reportId) => applyUrgencyScoring(reportId)));
 
-  return res.json({ imported: insertedIds.length, errors });
+  return res.json({ imported: insertedIds.length, errors, ai_score_pending: insertedIds.length > 0 });
 });
 
 router.get('/import/template', auth, requireRole('admin'), async (_req, res) => {

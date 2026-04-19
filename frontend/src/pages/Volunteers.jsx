@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { api } from '../api/client';
 
 export default function Volunteers() {
   const [skillFilter, setSkillFilter] = useState('');
   const [availabilityFilter, setAvailabilityFilter] = useState('true');
   const [volunteers, setVolunteers] = useState([]);
+  const [expandedVolunteerId, setExpandedVolunteerId] = useState(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -23,6 +24,10 @@ export default function Volunteers() {
 
     loadVolunteers();
   }, [skillFilter, availabilityFilter]);
+
+  function toggleVolunteerRow(volunteerId) {
+    setExpandedVolunteerId((current) => (current === volunteerId ? null : volunteerId));
+  }
 
   return (
     <section className="page-grid">
@@ -59,13 +64,31 @@ export default function Volunteers() {
           </thead>
           <tbody>
             {volunteers.map((volunteer) => (
-              <tr key={volunteer.user_id}>
-                <td>{volunteer.display_name}</td>
-                <td>{volunteer.email}</td>
-                <td>{(volunteer.skills || []).join(', ') || '-'}</td>
-                <td>{(volunteer.availability || []).join(', ') || '-'}</td>
-                <td>{volunteer.location_preference || '-'}</td>
-              </tr>
+              <Fragment key={volunteer.user_id}>
+                <tr
+                  onClick={() => toggleVolunteerRow(volunteer.user_id)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <td>{volunteer.display_name}</td>
+                  <td>{volunteer.email}</td>
+                  <td>{(volunteer.skills || []).join(', ') || '-'}</td>
+                  <td>{(volunteer.availability || []).join(', ') || '-'}</td>
+                  <td>{volunteer.location_preference || '-'}</td>
+                </tr>
+                {expandedVolunteerId === volunteer.user_id ? (
+                  <tr>
+                    <td colSpan="5">
+                      <div className="expanded-row">
+                        <strong>{volunteer.display_name}</strong>
+                        <span>Skills: {(volunteer.skills || []).join(', ') || 'No skills added yet'}</span>
+                        <span>Availability: {(volunteer.availability || []).join(', ') || 'Not specified'}</span>
+                        <span>Location preference: {volunteer.location_preference || 'Not specified'}</span>
+                        <span>Bio: {volunteer.bio || 'No bio added yet'}</span>
+                      </div>
+                    </td>
+                  </tr>
+                ) : null}
+              </Fragment>
             ))}
           </tbody>
         </table>
