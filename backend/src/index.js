@@ -12,11 +12,25 @@ const analyticsRoutes = require('./routes/analytics');
 
 const app = express();
 const port = process.env.PORT || 8080;
-const frontendOrigin = (process.env.FRONTEND_URL || 'http://localhost:5173').trim();
+
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.FRONTEND_URL_FIREBASE,
+  'https://smart-resource-allocation-seven.vercel.app',
+  'https://smart-resource-ninad-2026.web.app',
+  'http://localhost:5173',
+].filter(Boolean);
 
 app.use(
   cors({
-    origin: frontendOrigin,
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error('Not allowed by CORS'));
+    },
   })
 );
 app.use(express.json({ limit: '2mb' }));

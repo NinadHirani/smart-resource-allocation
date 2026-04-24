@@ -4,7 +4,7 @@ Smart Resource Allocation is a full-stack prototype for NGOs to collect field ne
 
 ## Live Demo
 
-- Frontend: `https://smart-resource-allocation-seven.vercel.app`
+- Frontend: `https://smart-resource-ninad-2026.web.app`
 - Backend API: `https://smart-resource-allocation-api.vercel.app`
 - GitHub Repository: `https://github.com/NinadHirani/smart-resource-allocation`
 
@@ -18,7 +18,7 @@ Smart Resource Allocation is a full-stack prototype for NGOs to collect field ne
 
 ## Deployment
 
-- Frontend hosted on Vercel
+- Frontend hosted on Firebase Hosting
 - Backend hosted on Vercel
 - PostgreSQL hosted on Supabase
 - Production frontend talks to the live backend using `VITE_API_BASE_URL`
